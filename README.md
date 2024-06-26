@@ -71,7 +71,7 @@ php tests/mitm.php start
 ```
 On first run it create a self-signed SSL root certificate in CA subdirectory. Add this self-signed CA certificate in your browser trusted certificates!
 
-For each site PHPrivoxy\Proxy\MITM will generate self-signed certificates in "certificates" subdirectory.
+For each site PHPrivoxy\Proxy\MITM will generate self-signed certificate in "certificates" subdirectory.
 
 In this sample, we use simple PSR-15 compatible HttpClientMiddleware for site downloading. You also may add your own PSR-15 compatible Middlewares in queue for PSR-15 handler (modified Relay\Relay in this sample).
 
