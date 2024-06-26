@@ -76,4 +76,4 @@ For each site PHPrivoxy\Proxy\MITM will generate self-signed certificate in "cer
 In this sample, we use simple PSR-15 compatible HttpClientMiddleware for site downloading. You also may add your own PSR-15 compatible Middlewares in queue for PSR-15 handler (modified Relay\Relay in this sample).
 
 ### License
-MIT License See [LICENSE.MD](LICENSE.MD)
+MIT License See [LICENSE](LICENSE)
