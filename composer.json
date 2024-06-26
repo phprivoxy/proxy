@@ -1,0 +1,30 @@
+{
+    "name": "phprivoxy/proxy",
+    "description": "Core library for HTTP/HTTPS proxy building.",
+    "type": "library",
+    "homepage": "https://www.phprivoxy.ru",
+    "license": "MIT",
+    "keywords": ["phprivoxy", "privoxy", "php", "proxy", "php-proxy", "ssl-proxy", "http-proxy", "https-proxy", "ssl", "http", "https", "high-performance"],
+    "autoload": {
+        "psr-4": {
+            "PHPrivoxy\\Proxy\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mikhail (Balpom)"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "phprivoxy/core": ">=0.9",
+        "phprivoxy/x509": ">=0.8.1",
+        "psr/http-message": ">=2.0",
+        "psr/http-server-handler":">=1.0",
+        "workerman/psr7": ">=2.0"
+    },
+    "require-dev": {
+        "phprivoxy/relay": ">=2.1.5",
+        "guzzlehttp/guzzle": "^7.8"
+    }
+}
