@@ -10,13 +10,22 @@ use PHPrivoxy\Proxy\ProxyException;
 
 class WorkerFactory
 {
+    private string $defaultMitmHost = '127.0.0.1';
     private string $mitmHost; // MITM worker host.
     private int $mitmPort; // MITM worker port.
+    private ContextProvider $contextProvider;
 
-    public function __construct(string $mitmHost = '127.0.0.1')
+    public function __construct(?ContextProvider $contextProvider = null, ?string $mitmHost = '127.0.0.1')
     {
-        $this->setMitmHost($mitmHost);
-        $this->contextProvider = new ContextProvider();
+        if (null === $contextProvider) {
+            $contextProvider = new ContextProvider();
+        }
+        $this->contextProvider = $contextProvider;
+
+        if (empty($mitmHost)) {
+            $mitmHost = $this->defaultMitmHost;
+        }
+        $this->mitmHost = $mitmHost;
     }
 
     public function getWorker(string $host, int $port)
@@ -43,14 +52,5 @@ class WorkerFactory
         $mitmWorker->name = 'MITM';
 
         return $mitmWorker;
-    }
-
-    private function setMitmHost(string $mitmHost): void
-    {
-        $mitmHost = trim($mitmHost);
-        if (empty($mitmHost)) {
-            throw new ProxyException('Incorrect MITM worker host.');
-        }
-        $this->mitmHost = $mitmHost;
     }
 }
