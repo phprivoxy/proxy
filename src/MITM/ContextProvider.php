@@ -14,13 +14,16 @@ class ContextProvider
 {
     private string $rootPrivateKeyFileName = 'PHPrivoxy.key';
     private string $rootCertificateFileName = 'PHPrivoxy_CA.crt';
+    private string $defaultRootCertificateDirName = '/CA/';
+    private string $defaultCertificatesDirName = '/certificates/';
     private int $numberOfDays = 365241; // 1000 years
     private ServerCertificateCreator $certificateCreator;
 
     public function __construct(?string $rootCertificateDir = null, ?string $certificatesDir = null)
     {
-        $rootCertificateDir = (null !== $rootCertificateDir) ? $rootCertificateDir : __DIR__ . '/../../CA/';
-        $this->certificatesDir = (null !== $certificatesDir) ? $certificatesDir : __DIR__ . '/../../certificates/';
+        $appRootPath = $this->defineApplicationRootPath();
+        $rootCertificateDir = (null !== $rootCertificateDir) ? $rootCertificateDir : $appRootPath . $this->defaultRootCertificateDirName;
+        $this->certificatesDir = (null !== $certificatesDir) ? $certificatesDir : $appRootPath . $this->defaultCertificatesDirName;
 
         if (!is_dir($rootCertificateDir)) {
             @mkdir($rootCertificateDir, 0755, true);
@@ -80,5 +83,18 @@ class ContextProvider
         ];
 
         return $context;
+    }
+
+    private function defineApplicationRootPath(): string
+    {
+        $dir = str_replace('\\', '/', __DIR__);
+        $seps = ['/vendor/', '/src/'];
+        foreach ($seps as $sep) {
+            if (false !== ($pos = mb_strrpos($dir, $sep))) {
+                return mb_substr($dir, 0, $pos);
+            }
+        }
+
+        return dirname(dirname($dir));
     }
 }
