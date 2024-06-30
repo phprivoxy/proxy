@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHPrivoxy\Proxy;
 
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Client\NetworkExceptionInterface;
 use Workerman\Connection\TcpConnection;
 use Workerman\Connection\AsyncTcpConnection;
 use Workerman\Protocols\Http;
@@ -42,12 +43,23 @@ class MITM extends PSR15Proxy
     {
         $this->mitmWorker = null;
         while (null === $this->mitmWorker) {
+            // Even for a obviously non-existent site (a la https://this.site.not-exist/) it generates an SSL certificate.
+            // It is a fundamental disadvantage.
             $this->mitmWorker = $this->mitmWorkerFactory->getWorker($this->host, $this->port);
 
             Http::requestClass(ServerRequest::class);
             $this->mitmWorker->onMessage = function (TcpConnection $connection, ServerRequest $request) {
                 $request = $this->sanitizeWorkermanServerRequest($request);
-                $response = $this->handler->handle($request);
+
+                // By default, Workerman worker (which run from PHPrivoxy\Core\Server) will try it 10 attempts.
+                try {
+                    $response = $this->handler->handle($request);
+                } catch (NetworkExceptionInterface $e) {
+                    $connection->close();
+                    $this->mitmWorker->stop();
+                    return;
+                }
+
                 $response = $response->withoutHeader('Transfer-Encoding');
                 $response = new WorkermanResponseDecorator($response);
                 $connection->send($response);
