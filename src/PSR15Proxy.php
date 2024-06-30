@@ -6,12 +6,12 @@ namespace PHPrivoxy\Proxy;
 
 use Psr\Http\Server\RequestHandlerInterface;
 use Workerman\Psr7\ServerRequest;
-use Workerman\Worker;
+use PHPrivoxy\Core\ServerWorker;
 
 abstract class PSR15Proxy extends AbstractProxy
 {
     protected RequestHandlerInterface $handler;
-    protected Worker $mitmWorker;
+    protected ?ServerWorker $mitmWorker;
 
     public function __construct(RequestHandlerInterface $handler)
     {
