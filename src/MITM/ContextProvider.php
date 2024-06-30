@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PHPrivoxy\Proxy\MITM;
 
+use PHPrivoxy\Core\RootPath;
 use PHPrivoxy\X509\RootCertificateCreator;
 use PHPrivoxy\X509\ServerCertificateCreator;
 use PHPrivoxy\X509\DTO\ImmutableNames;
@@ -12,6 +13,8 @@ use PHPrivoxy\X509\DTO\PrivateKeyProperties;
 
 class ContextProvider
 {
+    use RootPath;
+
     private string $rootPrivateKeyFileName = 'PHPrivoxy.key';
     private string $rootCertificateFileName = 'PHPrivoxy_CA.crt';
     private string $defaultRootCertificateDirName = '/CA/';
@@ -21,7 +24,7 @@ class ContextProvider
 
     public function __construct(?string $rootCertificateDir = null, ?string $certificatesDir = null)
     {
-        $appRootPath = $this->defineApplicationRootPath();
+        $appRootPath = self::getRootPath();
         $rootCertificateDir = (null !== $rootCertificateDir) ? $rootCertificateDir : $appRootPath . $this->defaultRootCertificateDirName;
         $this->certificatesDir = (null !== $certificatesDir) ? $certificatesDir : $appRootPath . $this->defaultCertificatesDirName;
 
@@ -83,18 +86,5 @@ class ContextProvider
         ];
 
         return $context;
-    }
-
-    private function defineApplicationRootPath(): string
-    {
-        $dir = str_replace('\\', '/', __DIR__);
-        $seps = ['/vendor/', '/src/'];
-        foreach ($seps as $sep) {
-            if (false !== ($pos = mb_strrpos($dir, $sep))) {
-                return mb_substr($dir, 0, $pos);
-            }
-        }
-
-        return dirname(dirname($dir));
     }
 }
