@@ -10,7 +10,7 @@ use Workerman\Connection\TcpConnection;
 use Workerman\Connection\AsyncTcpConnection;
 use Workerman\Protocols\Http;
 use Workerman\Psr7\ServerRequest;
-use PHPrivoxy\Core\ProxyException;
+use PHPrivoxy\Proxy\ProxyException;
 use PHPrivoxy\Proxy\MITM\WorkerFactory;
 use PHPrivoxy\Proxy\MITM\ContextProvider;
 use PHPrivoxy\Proxy\MITM\WorkermanResponseDecorator;
